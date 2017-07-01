@@ -1,0 +1,28 @@
+Crime = load '/home/acadgild/Desktop/Assignment/Crimes_dataset1.txt' using PigStorage(',') as (ID:chararray,CaseNo:chararray,date,block:chararray,IUCR:chararray,Primary_Type:chararray,description:chararray,
+location_destination:chararray,arrest:chararray,
+domestic:chararray,beat:chararray,district:chararray,
+ward:chararray,community:chararray,area:chararray,FBI_Code:chararray,
+XCoordinate:chararray,YCoordinate:chararray,Year:chararray,
+UpdatedOn:chararray,Latitude_Longitude:chararray,Location:chararray);
+
+--1. Count of cases under each FBI Code
+
+FBI_Code_grp = GROUP Crime by FBI_Code;
+FBI_grp_count = FOREACH FBI_Code_grp generate group as grp,COUNT(Crime.ID);
+
+--2.Count no of cases under FBI Code - 48B
+
+fltr_Crime = filter Crime by FBI_Code == '48B';
+
+--3. Number of arrest districtwise
+
+Arrest = FILTER Crime by arrest == 'TRUE';
+Crime_dstwise = GROUP Arrest by district;
+count_Crime_dstwise = foreach Crime_dstwise generate group, COUNT(Arrest.ID);
+
+--4.
+
+Arrest_Date = FILTER Crime by date > 01/10/2015 and date < 31/10/2016;
+
+
+
